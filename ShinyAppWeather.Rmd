@@ -1,0 +1,50 @@
+---
+title: "Exercise 11.6 from Howework 2"
+author: "Patricia Reynoso"
+date: "October 31, 2018"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+**Exercise 11.6**
+
+Create a Shiny app to display an interactive time series plot of the macleish weather
+data. Include a selection box to alternate between data from the whately 2015 and
+orchard 2015 weather stations.
+
+```{r eruptions, message=FALSE, echo=FALSE}
+library(shiny)
+library(macleish)
+library(ggplot2)
+ui <- shinyUI(bootstrapPage(h3("Weather Temperatures for the selected station 2015"),
+                    checkboxGroupInput('names', 'Names to display:', 
+                                       c("Whately_2015","Orchard_2015"),
+                                       selected = "Whately_2015"),
+                    plotOutput("plot")
+))
+
+server <- shinyServer(function(input, output){
+  output$plot <-renderPlot ({
+ ifelse(input$names == "Whately_2015", ds<- whately_2015, ds <-orchard_2015)
+      ggplot(data = ds, aes(x = when, y = temperature)) + geom_line(size=2)
+  })
+})
+```
+
+
+
+```{r tabsets, echo=FALSE}
+shinyApp(ui=ui,server=server,
+  options = list(
+    width = "100%", height = 550
+  )
+)
+```
+
+
+
+
+
